@@ -33,3 +33,6 @@ export function styleOf(html) {
   if (!m) throw new Error('No <style> block');
   return m[1];
 }
+
+export const PROMISE = /Nothing in your address book changes until you confirm it in Review\./;
+export const NOTES_LINE = /Roll Call can't read contact notes yet, so notes on removed or merged-away cards won't be in Recently removed\./;

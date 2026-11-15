@@ -6,13 +6,14 @@ const pages = await readDocs();
 const html = pages.get('roll-call/support/index.html');
 
 const SUPPORT_SECTIONS = {
-  'what-it-does': [/5, 10, 20 or 30/, /\bKeep\b/, /Set aside/, /\bMerge\b/, /Not the same/, /\bUndo\b/],
+  'what-it-does': [/5, 10, 20 or 30/, /\bKeep\b/, /Set aside/, /\bMerge\b/, /Not the same/, /\bUndo\b/, /30 days/],
   'daily-deck': [/once a day/, /\bround\b/, /\bhalf\b/, /Do 5 more/, /tomorrow/],
-  duplicates: [/Same mobile number/, /Same email/, /Nickname: Mike ↔ Michael/, /Last initial/, /Same name only/,
-    /Becomes one card/, /\bChange\b/, /This one's different/, /Exchange/, /Contact Posters/],
+  duplicates: [/Same mobile number/, /Same email/, /Nickname: Mike ↔ Michael/, /First initial/, /Last initial/,
+    /Small spelling difference/, /Same name only/, /Becomes one card/, /\bChange\b/, /This one's different/,
+    /Exchange/, /Contact Posters/],
   review: [PROMISE, /Keep all/, /\bLater\b/, /free space/, /Changed since you saw it/],
   'recently-removed': [/30 days/, /\bRestore\b/, /\.vcf/, /Delete these copies now/, /iCloud Backup/],
-  'limited-access': [/iOS 18/, /Share more/, /Open Settings/],
+  'limited-access': [/iOS 18/, /Share more/, /Open Settings/, /Recently removed/],
   'read-only': [/Couldn't change: this account doesn't allow it/],
   notes: [NOTES_LINE],
   accessibility: [/VoiceOver/, /Voice Control/, /200%/, /Reduce Motion/, /\bdark\b/, /\bLater\b/],

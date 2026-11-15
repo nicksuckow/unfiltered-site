@@ -23,77 +23,81 @@ footer { margin-top: 3rem; font-size: 0.875rem; }
 <h2>What Roll Call does</h2>
 <p>Roll Call shows you a few contacts each day, and you decide what to do with each one. You choose how many cards a day: 5, 10, 20 or 30. It is meant to be a quick daily habit, not a chore.</p>
 <p>There are two kinds of card. On a person card, swipe right or tap Keep to leave the contact as it is, or swipe left or tap Set aside to send it to Review for removal. On a duplicate card, swipe right or tap Merge to send a merge to Review, or swipe left or tap Not the same. Every swipe has a button, so you never need to swipe.</p>
-<p>Undo steps back through every decision you made today, until you confirm Review. After that, use Restore in Recently removed. If you turn on reminders, Roll Call sends you a notification each day at the time you pick, and skips it once you have finished that day's cards. Reminders are optional and off by default.</p>
+<p>Undo steps back through every decision you made today, until you confirm Review. After that, use Restore in Recently removed.</p>
+<p>Reminders are optional and off by default. Roll Call offers them once, on the All done screen the first day nothing is waiting for Review, and you can turn them on, change the time or turn them off in Roll Call's Settings at any time. A reminder comes each day at the time you pick, and is skipped once you have finished that day's cards. If you don't open Roll Call for 30 days, the reminders stop until you open it again.</p>
 </section>
 
 <section id="daily-deck">
 <h2>The daily deck and rounds</h2>
 <p>Roll Call deals your deck once a day, the first time you open the app on a new date. The deck is saved, so opening the app again doesn't deal a new one.</p>
 <p>A round is one pass through everyone in your address book. Every contact comes up once before anyone repeats, and people you keep come back in the next round. Roll Call treats people the way the Contacts app does, so cards that iOS has linked across accounts count as one person. When you have decided about everyone, the round is complete and the next one starts on the next new day.</p>
-<p>While duplicates are waiting, up to half of each day's cards (rounded up) are duplicate cards, and the rest are people. If there are too few people left to fill the deck, duplicate cards fill the rest, and with fewer people than your daily number the deck is simply shorter. If duplicates are still waiting when you finish, All done offers Do 5 more, which deals five more duplicate cards. You can ignore it.</p>
-<p>If you change how many cards a day in Settings, the change applies tomorrow. If you haven't touched today's deck yet, it is dealt again straight away.</p>
+<p>While duplicates are waiting, up to half of each day's cards (rounded up) are duplicate cards, and the rest are people. If there aren't enough people left to fill the rest, Roll Call deals more duplicate cards instead; only when there aren't enough of either is the deck shorter. If duplicates are still waiting when you finish, All done offers “Do 5 more” (fewer if fewer are waiting), which deals that many more duplicate cards. You can ignore it.</p>
+<p>If you change how many cards a day in Roll Call's Settings, the change applies tomorrow. If you haven't touched today's deck yet, it is dealt again straight away.</p>
 </section>
 
 <section id="duplicates">
 <h2>Duplicates, and why something matched</h2>
-<p>Roll Call finds duplicates by a shared phone number, a shared email, nicknames, initials and small typos. Every duplicate card says why it matched:</p>
+<p>Roll Call finds duplicates by a shared phone number, a shared email, nicknames, initials and small typos. Every duplicate card says why it matched, for example:</p>
 <ul>
-<li>Same mobile number, or the same number with another label</li>
+<li>Same mobile number (or the same home, work, iPhone or main number)</li>
 <li>Same email</li>
 <li>Nickname: Mike ↔ Michael</li>
+<li>First initial</li>
 <li>Last initial</li>
+<li>Small spelling difference</li>
+<li>One card has no name</li>
 <li>Same name only, when nothing else is shared and nothing contradicts the match</li>
 </ul>
-<p>A postal address, a shared role email such as info@ or office@, and a household or switchboard number shared by people with different names are never treated as evidence. Neither are fax and pager numbers, or the same number with different extensions. Roll Call also won't match people whose names conflict, so family members who share a home line stay apart.</p>
-<p>A card shows each person in the group with their account, and a Becomes one card preview of the merged result. If something differs, such as two birthdays, the card flags it. Choose Merge to send the merge to Review, or Not the same, and Roll Call remembers that group and won't suggest it again.</p>
-<p>Change opens a sheet where you can pick between conflicting names, photos, birthdays or companies. You can also choose This one's different to take one card out of the group, which records that it is not the same person as the rest. The sheet can't delete individual phone numbers or emails, because a merge never drops them: Roll Call combines them and removes only exact repeats.</p>
+<p>These are never treated as evidence: a postal address; a shared role email such as info@ or office@; a phone number or email shared by people whose names conflict, such as a household line or a switchboard; fax and pager numbers; and the same number with different extensions. Roll Call also won't match people whose names conflict, so family members who share a home line stay apart.</p>
+<p>A card shows each person in the group with their account, and a preview of the merged result labelled “Becomes one card”. If birthdays, last names, middle names or suffixes differ, the card flags it, for example “Birthdays differ”. Choose Merge to send the merge to Review. Choose Not the same, and Roll Call remembers that group and won't suggest it again.</p>
+<p>Change opens a sheet where you can pick between conflicting names, photos, birthdays or companies. While three or more cards are left in the group, you can also choose “This one's different” to take one card out of it, which records that it is not the same person as the rest. The sheet can't delete individual phone numbers or emails, because a merge never drops them: Roll Call combines them and removes only exact repeats.</p>
 <p>When Roll Call merges, it updates one existing card and removes the others. It prefers a card that is writable and in your default account, then the one with the most filled in, then one with a photo. Merging across accounts removes the other card from that account too, and Review says so.</p>
-<p>Work accounts, such as Exchange, are left out of merging for now, so their cards come up only as person cards. Apple gives apps no access to Contact Posters, pronouns, ringtones or Favorites, so Roll Call can't see them, and they are lost from a card that is merged away. A merge preview says this.</p>
+<p>Work accounts, such as Exchange, are left out of merging for now, so their cards come up only as person cards. Apple gives apps no access to Contact Posters, pronouns, ringtones or Favorites, so Roll Call can't see or copy them. They are lost from any card Roll Call removes or merges away, and Restore can't bring them back. A duplicate card's preview says this too.</p>
 </section>
 
 <section id="review">
 <h2>Review</h2>
-<p>Nothing in your address book changes until you confirm it in Review. Review has two sections, To remove and To merge, grouped by the day you marked each item. Open it from the chip in the header, which shows how many items are waiting. Tap a row to rescue it: a rescued removal counts as kept, and a rescued merge comes back later as undecided. Keep all and Later are there too, and Later leaves everything waiting.</p>
-<p>The confirm button says exactly what will happen, for example Remove 4 · Merge 2, and then an alert repeats it and reminds you that you can restore for 30 days. If a person's card is linked across accounts, removing them removes every linked card, and Review says so, for example Removes from iCloud and Gmail.</p>
-<p>Roll Call first checks that there is free space, then saves a full copy of everything it is about to change and reads it back to check it. If that fails, nothing is applied. Then it applies each item on its own and checks the result, so one problem doesn't block the rest. When it finishes, it tells you what was removed and merged, what couldn't be done and why, and where to restore from.</p>
-<p>Roll Call works out each merge again when you open Review. If a card changed since you saw it, the merge is marked Changed since you saw it and shows the new result before you confirm.</p>
+<p>Nothing in your address book changes until you confirm it in Review. Review has two sections, To remove and To merge, grouped by the day you marked each item. Open it any time from the Review count at the top of the screen, which shows how many items are waiting. Tap a row to rescue it: a rescued removal counts as kept, and a rescued merge comes back later as undecided. Keep all and Later are there too, and Later leaves everything waiting.</p>
+<p>The confirm button says exactly what will happen, for example “Remove 4 · Merge 2”, and then an alert repeats it and reminds you that you can restore for 30 days. If a person's card is linked across accounts, removing them removes every linked card, and Review says so, for example “Removes from iCloud and Gmail”.</p>
+<p>Roll Call first checks that there is free space, then saves a copy of everything it can read on the cards it is about to change (but not notes) and reads it back to check it. If that fails, nothing is applied. Then it applies each item on its own and checks the result, so one problem doesn't block the rest. When it finishes, it tells you what was removed and merged, what couldn't be done and why, and where to restore from.</p>
+<p>Roll Call works out each merge again when you open Review. If a card changed since you saw it, the merge is marked “Changed since you saw it” and shows the new result before you confirm.</p>
 </section>
 
 <section id="recently-removed">
 <h2>Recently removed and Restore</h2>
-<p>Everything Roll Call removes or merges away is kept in Recently removed for 30 days. Each entry shows its date and how many days are left. Once a copy is 30 days old, Roll Call deletes it the next time you open the app. You reach Recently removed from Settings and from the result screen after Review.</p>
-<p>Restore puts a removed card back in its original account if that account still exists and accepts it, and otherwise in your default account. Restoring a merge adds back the cards that were merged away, and puts the surviving card back as it was if you haven't edited it since. Otherwise Roll Call says it left that card alone. Restored cards are new cards, so iOS may link same-name cards across accounts again.</p>
-<p>You can export a contacts file (.vcf) of all entries, or of one, through the share sheet. The file is temporary and is deleted when the share sheet closes. Roll Call keeps these copies only on your iPhone, and they are excluded from iCloud Backup. A phone restored from a backup starts with an empty Recently removed, so if you are about to restore a new iPhone from a backup, export a .vcf first. Delete these copies now removes every saved copy at once.</p>
+<p>Everything Roll Call removes or merges away is kept in Recently removed for 30 days. Each entry shows its date and how many days are left. Once a copy is 30 days old, Roll Call deletes it the next time you open the app. You reach Recently removed from Roll Call's Settings, from the result screen after Review and, if Roll Call has no access to your contacts, from the screen asking for it.</p>
+<p>Restore puts a removed card back in its original account if that account still exists and accepts it, and otherwise in your default account. Restoring a merge adds back the cards that were merged away, and puts the surviving card back as it was if you haven't edited it since. Otherwise Roll Call says it left that card alone. Restored cards are new cards, so they aren't in Favorites, and iOS may link same-name cards across accounts again.</p>
+<p>You can export a contacts file (.vcf) of all entries, or of one, through the share sheet. The file is temporary and is deleted when the share sheet closes. Roll Call keeps these copies only on your iPhone, and they are excluded from iCloud Backup. A phone restored from a backup starts with an empty Recently removed, so if you are about to restore a new iPhone from a backup, export a .vcf first. Choose Delete these copies now to remove every saved copy at once.</p>
 </section>
 
 <section id="limited-access">
 <h2>If you shared only some contacts</h2>
-<p>On iOS 18 and later you can share only some of your contacts. Roll Call then works on just those people, and a banner says it can only see them. Choose Share more to pick more contacts, or Open Settings to change access. Roll Call doesn't block you or nag you, and it never treats a contact it can no longer see as deleted.</p>
-<p>If you didn't allow access at all, Roll Call shows a screen that explains why it needs access, with Open Settings.</p>
+<p>On iOS 18 and later you can share only some of your contacts. Roll Call then works on just those people, and a banner says it can only see them. Choose Share more to pick more contacts, or Open Settings, which opens your iPhone's Settings, to change access. Roll Call doesn't block you or nag you, and it never treats a contact it can no longer see as deleted.</p>
+<p>If you didn't allow access at all, or turned it off later, Roll Call shows a screen that explains why it needs access, with Open Settings. From that screen you can still open Recently removed to export or delete your saved copies; restoring them needs access.</p>
 </section>
 
 <section id="read-only">
 <h2>Cards Roll Call can't change</h2>
-<p>Some cards iOS won't let Roll Call change, such as a card in a read-only work account or one provided by another app. Review reports these as Couldn't change: this account doesn't allow it. Roll Call remembers them, so it doesn't deal them or offer them as duplicates again.</p>
-<p>If a merge fails because a card has a note, see Contact notes. Anything else that fails stays in Review with the error, so you can try again later.</p>
+<p>Some cards iOS won't let Roll Call change, such as a card in a read-only work account or one provided by another app. Review reports these as “Couldn't change: this account doesn't allow it”. Roll Call remembers them, so it doesn't deal them or offer them as duplicates again.</p>
+<p>If a merge fails because a card has a note, see <a href="#notes">Contact notes</a>. Anything else that fails stays in Review with the error, so you can try again later.</p>
 </section>
 
 <section id="notes">
 <h2>Contact notes</h2>
-<p>Roll Call can't read contact notes yet, so notes on removed or merged-away cards won't be in Recently removed. Review shows you this line too. Removing or merging away a card can lose its note, and Roll Call can't tell that a note existed. If you need a note, copy it somewhere else before you remove or merge that contact.</p>
-<p>Because merges that touch a note can fail, those people come back as person cards and stay out of duplicate groups for now.</p>
+<p>Roll Call doesn't yet have Apple's permission to read contact notes. Review shows this line: “Roll Call can't read contact notes yet, so notes on removed or merged-away cards won't be in Recently removed.” Removing or merging away a card can lose its note, and Roll Call can't tell that a note existed. If you need a note, copy it somewhere else before you remove or merge that contact.</p>
+<p>If a merge fails because a card has a note, the result screen after Review says so, and the people in that merge come back as person cards. They stay out of duplicate cards until Roll Call can read notes, so the merge isn't tried again.</p>
 </section>
 
 <section id="accessibility">
 <h2>Accessibility</h2>
 <p>Roll Call works with VoiceOver. Each card is one item with custom actions, focus moves to the new top card after each decision, and Undo and results are announced. A contact card isn't read as an image, and a duplicate card's label includes why it matched, the result and any conflicts. Change is a custom action. The Keep and Set aside buttons become Merge and Not the same on a duplicate card, and VoiceOver announces the change.</p>
-<p>It also works with Voice Control, where button names match the text you see. Text can be made larger up to at least 200%, body text is never capped and nothing shrinks to fit. Roll Call respects Reduce Motion and follows your iPhone's light or dark appearance, so it looks right in dark mode. VoiceOver's escape gesture closes every sheet, and on Review it means Later, so it never applies anything. No message disappears on a timer, and every swipe has a button.</p>
-<p>If something doesn't work for you, email support at support@unfilteredinvestmentsllc.com and describe what happened.</p>
+<p>It also works with Voice Control, where button names match the text you see. Roll Call follows your iPhone's text size, including Larger Text, to at least 200%. Body text keeps growing with your setting, and nothing shrinks to fit. Roll Call respects Reduce Motion. It follows your iPhone's light or dark appearance, or the one you choose under Appearance in Roll Call's Settings. VoiceOver's escape gesture closes every sheet, and on Review it means Later, so it never applies anything. No message disappears on a timer, and every swipe has a button.</p>
+<p>If something doesn't work for you, email support at <a href="mailto:support@unfilteredinvestmentsllc.com">support@unfilteredinvestmentsllc.com</a> and describe what happened.</p>
 </section>
 
 <section id="contact">
 <h2>Contact</h2>
-<p>Write to Nicholas Suckow at support@unfilteredinvestmentsllc.com. Please include your iPhone model, your iOS version and what happened. Don't send contact details.</p>
+<p>Write to Nicholas Suckow at <a href="mailto:support@unfilteredinvestmentsllc.com">support@unfilteredinvestmentsllc.com</a>. Please include your iPhone model, your iOS version (both are in your iPhone's Settings &gt; General &gt; About) and what happened. Please don't send details or screenshots of people in your address book; a description of the problem is enough.</p>
 </section>
 </main>
 <footer><p>© 2026 Nicholas Suckow · <a href="mailto:support@unfilteredinvestmentsllc.com">support@unfilteredinvestmentsllc.com</a></p></footer>

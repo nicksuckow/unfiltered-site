@@ -1,6 +1,9 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+
 import { HtmlValidate, StaticConfigLoader } from 'html-validate';
 
-import { SITE_HOST } from './site.mjs';
+import { SITE_HOST, SITE_ORIGIN } from './site.mjs';
 
 /** @typedef {{ file: string, check: 'html' | 'privacy' | 'files' | 'links', message: string }} Problem */
 
@@ -111,4 +114,104 @@ export function findStrayFiles(files) {
       check: /** @type {const} */ ('files'),
       message: 'only .html pages, CNAME and .nojekyll belong on the site',
     }));
+}
+
+const HREF = /\shref="([^"]*)"/gi;
+const ID = /\sid="([^"]*)"/gi;
+const SCHEME = /^[a-z][a-z0-9+.-]*:/i;
+
+/**
+ * check 'links'. pages: site-root-relative path ('roll-call/privacy/index.html') → HTML.
+ * @param {Map<string, string>} pages
+ * @returns {Problem[]}
+ */
+export function findBrokenLinks(pages) {
+  /** @type {Map<string, Set<string>>} */
+  const ids = new Map();
+  for (const [file, html] of pages) {
+    ids.set(file, new Set([...html.matchAll(ID)].map((m) => m[1])));
+  }
+
+  /** @type {Problem[]} */
+  const problems = [];
+  for (const [file, html] of pages) {
+    const add = (message) => problems.push({ file, check: 'links', message });
+    for (const m of html.matchAll(HREF)) {
+      let href = m[1];
+      if (href.startsWith(SITE_ORIGIN + '/') || href === SITE_ORIGIN) {
+        href = href.slice(SITE_ORIGIN.length) || '/';
+      } else if (SCHEME.test(href)) {
+        continue; // mailto: and third-party URLs are the privacy check's job
+      }
+
+      if (href.startsWith('#')) {
+        const id = href.slice(1);
+        if (id && !ids.get(file).has(id)) add(`${href}: missing #${id} on this page`);
+        continue;
+      }
+      if (!href.startsWith('/')) {
+        add(`${href}: use a root-relative link (starting with /)`);
+        continue;
+      }
+
+      const hash = href.indexOf('#');
+      const target = hash === -1 ? href : href.slice(0, hash);
+      const id = hash === -1 ? '' : href.slice(hash + 1);
+      let key;
+      if (target.endsWith('/')) key = target.slice(1) + 'index.html';
+      else if (target.endsWith('.html')) key = target.slice(1);
+      else {
+        add(`${href}: directory links end in /`);
+        continue;
+      }
+      if (!pages.has(key)) {
+        add(`${href}: links to a missing page`);
+      } else if (id && !ids.get(key).has(id)) {
+        add(`${href}: missing #${id} in ${key}`);
+      }
+    }
+  }
+  return problems;
+}
+
+/**
+ * Every file under root, relative, '/'-separated, sorted; dotfiles included; .DS_Store skipped.
+ * @param {string} root
+ * @returns {Promise<string[]>}
+ */
+export async function listFiles(root) {
+  const entries = await fs.readdir(root, { recursive: true, withFileTypes: true });
+  return entries
+    .filter((e) => e.isFile() && e.name !== '.DS_Store')
+    .map((e) => path.relative(root, path.join(e.parentPath, e.name)).split(path.sep).join('/'))
+    .sort();
+}
+
+/**
+ * The .html files under root, UTF-8, keyed by site-root-relative path.
+ * @param {string} root
+ * @returns {Promise<Map<string, string>>}
+ */
+export async function readSite(root) {
+  const pages = new Map();
+  for (const file of await listFiles(root)) {
+    if (file.endsWith('.html')) pages.set(file, await fs.readFile(path.join(root, file), 'utf8'));
+  }
+  return pages;
+}
+
+/**
+ * findStrayFiles, then validatePage and findPrivacyProblems per page, then findBrokenLinks; sorted by file.
+ * @param {string} root
+ * @returns {Promise<Problem[]>}
+ */
+export async function checkSite(root) {
+  const pages = await readSite(root);
+  const problems = findStrayFiles(await listFiles(root));
+  for (const [file, html] of pages) {
+    problems.push(...(await validatePage(html, file)), ...findPrivacyProblems(html, file));
+  }
+  problems.push(...findBrokenLinks(pages));
+  // Array.prototype.sort is stable, so each file keeps its check order.
+  return problems.sort((a, b) => (a.file < b.file ? -1 : a.file > b.file ? 1 : 0));
 }

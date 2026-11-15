@@ -1,7 +1,18 @@
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
 import { test } from 'node:test';
 
-import { findPrivacyProblems, findStrayFiles, validatePage } from '../scripts/site-checks.mjs';
+import {
+  checkSite,
+  findBrokenLinks,
+  findPrivacyProblems,
+  findStrayFiles,
+  listFiles,
+  validatePage,
+} from '../scripts/site-checks.mjs';
 import { page } from './fixtures.mjs';
 
 const BAD_HEADINGS = '<main><h1>A</h1><h3>B</h3></main>';
@@ -133,4 +144,90 @@ test('findStrayFiles flags fonts, scripts, images and stylesheets', () => {
     problems.map((p) => [p.file, p.check]),
     files.map((f) => [f, 'files']),
   );
+});
+
+const links = (...hrefs) => page({ body: `<main><h1>Title</h1>${hrefs.map((h) => `<a href="${h}">x</a>`).join('')}</main>` });
+const withIds = (ids, ...hrefs) => page({
+  body: `<main><h1>Title</h1>${ids.map((i) => `<p id="${i}">x</p>`).join('')}${hrefs.map((h) => `<a href="${h}">x</a>`).join('')}</main>`,
+});
+const linkProblems = (index) =>
+  findBrokenLinks(
+    new Map([
+      ['index.html', index],
+      ['roll-call/privacy/index.html', withIds(['a'], '/', '#a')],
+    ]),
+  );
+
+test('findBrokenLinks passes links between existing pages and fragments', () => {
+  assert.deepEqual(linkProblems(links('/roll-call/privacy/', '/roll-call/privacy/#a')), []);
+});
+
+for (const [row, href, expected] of [
+  ['flags a link to a missing page', '/roll-call/nope/', 'missing page'],
+  ['flags a directory link without a trailing slash', '/roll-call/privacy', 'end in /'],
+  ['flags a relative link', 'roll-call/privacy/', 'root-relative'],
+  ['flags a missing fragment on the same page', '#nope', '#nope'],
+  ['flags a missing fragment on another page', '/roll-call/privacy/#nope', '#nope'],
+  ["follows absolute links to the site's own origin", 'https://unfilteredinvestmentsllc.com/nope/', 'missing page'],
+]) {
+  test(`findBrokenLinks ${row}`, () => {
+    const problems = linkProblems(links(href));
+    assert.equal(problems.length, 1);
+    assert.ok(problems[0].message.includes(expected), problems[0].message);
+    assert.deepEqual([problems[0].file, problems[0].check], ['index.html', 'links']);
+  });
+}
+
+test('findBrokenLinks ignores mailto links', () => {
+  assert.deepEqual(linkProblems(links('mailto:support@unfilteredinvestmentsllc.com')), []);
+});
+
+async function makeSite(files) {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'site-'));
+  for (const [name, content] of Object.entries(files)) {
+    await fs.mkdir(path.dirname(path.join(dir, name)), { recursive: true });
+    await fs.writeFile(path.join(dir, name), content);
+  }
+  return dir;
+}
+const cleanFiles = () => ({ 'index.html': page(), CNAME: 'unfilteredinvestmentsllc.com\n', '.nojekyll': '' });
+const badFiles = () => ({
+  'index.html': page({ body: '<main><h1>Title</h1><script></script><a href="/nope/">x</a></main>' }),
+  'a.html': page().replace('<!DOCTYPE html>\n', ''),
+  'x.js': '',
+});
+
+test('checkSite passes a clean site', async (t) => {
+  const dir = await makeSite(cleanFiles());
+  t.after(() => fs.rm(dir, { recursive: true, force: true }));
+  assert.deepEqual(await checkSite(dir), []);
+});
+
+test('checkSite reports each kind of problem', async (t) => {
+  const dir = await makeSite(badFiles());
+  t.after(() => fs.rm(dir, { recursive: true, force: true }));
+  const problems = await checkSite(dir);
+  assert.deepEqual(new Set(problems.map((p) => p.check)), new Set(['html', 'privacy', 'files', 'links']));
+});
+
+test('listFiles skips .DS_Store', async (t) => {
+  const dir = await makeSite({ ...cleanFiles(), '.DS_Store': '' });
+  t.after(() => fs.rm(dir, { recursive: true, force: true }));
+  assert.deepEqual(await listFiles(dir), ['.nojekyll', 'CNAME', 'index.html']);
+});
+
+test('check-site exits 1 and names the file', async (t) => {
+  const dir = await makeSite(badFiles());
+  t.after(() => fs.rm(dir, { recursive: true, force: true }));
+  const r = spawnSync(process.execPath, ['scripts/check-site.mjs', dir], { encoding: 'utf8' });
+  assert.equal(r.status, 1);
+  assert.ok(r.stdout.includes('index.html [privacy]'), r.stdout);
+});
+
+test('check-site exits 0 on a clean site', async (t) => {
+  const dir = await makeSite(cleanFiles());
+  t.after(() => fs.rm(dir, { recursive: true, force: true }));
+  const r = spawnSync(process.execPath, ['scripts/check-site.mjs', dir], { encoding: 'utf8' });
+  assert.equal(r.status, 0);
+  assert.ok(r.stdout.includes('Site checks passed'), r.stdout);
 });

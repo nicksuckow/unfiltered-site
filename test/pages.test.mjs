@@ -32,6 +32,10 @@ test('the style wraps long words and sizes nothing in px', () => {
   assert.doesNotMatch(styleOf(home), /\d(?:\.\d+)?px\b/);
 });
 
+test('the style follows the system text size', () => {
+  assert.match(styleOf(home), /html\s*\{[^}]*font:\s*-apple-system-body;/);
+});
+
 test('the style follows light and dark and sets no colours', () => {
   assert.match(styleOf(home), /color-scheme:\s*light dark/);
   assert.doesNotMatch(

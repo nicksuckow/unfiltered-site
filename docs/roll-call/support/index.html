@@ -22,7 +22,7 @@ footer { margin-top: 3rem; font-size: 0.875rem; }
 <h2>What Roll Call does</h2>
 <p>Roll Call shows you a few contacts each day, and you decide what to do with each one. You choose how many cards a day: 5, 10, 20 or 30. It is meant to be a quick daily habit, not a chore.</p>
 <p>There are two kinds of card. On a person card, swipe right or tap Keep to leave the contact as it is, or swipe left or tap Set aside to send it to Review for removal. On a duplicate card, swipe right or tap Merge to send a merge to Review, or swipe left or tap Not the same. Every swipe has a button, so you never need to swipe.</p>
-<p>Undo steps back through every decision you made today. If you turn on reminders, Roll Call sends you a notification each day at the time you pick, and skips it once you have finished that day's cards. Reminders are optional and off by default.</p>
+<p>Undo steps back through every decision you made today, until you confirm Review. After that, use Restore in Recently removed. If you turn on reminders, Roll Call sends you a notification each day at the time you pick, and skips it once you have finished that day's cards. Reminders are optional and off by default.</p>
 </section>
 
 <section id="daily-deck">
@@ -53,7 +53,7 @@ footer { margin-top: 3rem; font-size: 0.875rem; }
 <section id="review">
 <h2>Review</h2>
 <p>Nothing in your address book changes until you confirm it in Review. Review has two sections, To remove and To merge, grouped by the day you marked each item. Open it from the chip in the header, which shows how many items are waiting. Tap a row to rescue it: a rescued removal counts as kept, and a rescued merge comes back later as undecided. Keep all and Later are there too, and Later leaves everything waiting.</p>
-<p>The confirm button says exactly what will happen, for example Remove 4 · Merge 2, and then iOS asks you once more. If a person's card is linked across accounts, removing them removes every linked card, and Review says so, for example Removes from iCloud and Gmail.</p>
+<p>The confirm button says exactly what will happen, for example Remove 4 · Merge 2, and then an alert repeats it and reminds you that you can restore for 30 days. If a person's card is linked across accounts, removing them removes every linked card, and Review says so, for example Removes from iCloud and Gmail.</p>
 <p>Roll Call first checks that there is free space, then saves a full copy of everything it is about to change and reads it back to check it. If that fails, nothing is applied. Then it applies each item on its own and checks the result, so one problem doesn't block the rest. When it finishes, it tells you what was removed and merged, what couldn't be done and why, and where to restore from.</p>
 <p>Roll Call works out each merge again when you open Review. If a card changed since you saw it, the merge is marked Changed since you saw it and shows the new result before you confirm.</p>
 </section>
@@ -74,7 +74,7 @@ footer { margin-top: 3rem; font-size: 0.875rem; }
 <section id="read-only">
 <h2>Cards Roll Call can't change</h2>
 <p>Some cards iOS won't let Roll Call change, such as a card in a read-only work account or one provided by another app. Review reports these as Couldn't change: this account doesn't allow it. Roll Call remembers them, so it doesn't deal them or offer them as duplicates again.</p>
-<p>Other problems are handled differently. An item that fails for another reason stays in Review with the error, so you can try again later.</p>
+<p>If a merge fails because a card has a note, see Contact notes. Anything else that fails stays in Review with the error, so you can try again later.</p>
 </section>
 
 <section id="notes">
@@ -86,7 +86,7 @@ footer { margin-top: 3rem; font-size: 0.875rem; }
 <section id="accessibility">
 <h2>Accessibility</h2>
 <p>Roll Call works with VoiceOver. Each card is one item with custom actions, focus moves to the new top card after each decision, and Undo and results are announced. A contact card isn't read as an image, and a duplicate card's label includes why it matched, the result and any conflicts. Change is a custom action. The Keep and Set aside buttons become Merge and Not the same on a duplicate card, and VoiceOver announces the change.</p>
-<p>It also works with Voice Control, where button names match the text you see. Text can be made larger up to at least 200%, body text is never capped and nothing shrinks to fit. Roll Call respects Reduce Motion and follows your iPhone's light or dark appearance, so it looks right in dark mode. VoiceOver's escape gesture closes every sheet, and on Review it means Later, so it never applies anything. Nothing is timed, and every swipe has a button.</p>
+<p>It also works with Voice Control, where button names match the text you see. Text can be made larger up to at least 200%, body text is never capped and nothing shrinks to fit. Roll Call respects Reduce Motion and follows your iPhone's light or dark appearance, so it looks right in dark mode. VoiceOver's escape gesture closes every sheet, and on Review it means Later, so it never applies anything. No message disappears on a timer, and every swipe has a button.</p>
 <p>If something doesn't work for you, email support at support@unfilteredinvestmentsllc.com and describe what happened.</p>
 </section>
 

@@ -18,7 +18,8 @@ export const LIVE_CHECKS = Object.freeze([
     expect: 'redirect',
     to: ROLL_CALL_URLS.privacyPolicy,
   },
-  { url: `${SITE_ORIGIN}/no-such-page/`, expect: 404, contains: 'Page not found' },
+  // GitHub's own 404 also says "Page not found", so look for a sentence only ours has.
+  { url: `${SITE_ORIGIN}/no-such-page/`, expect: 404, contains: 'There is no page at this address.' },
 ]);
 
 async function checkOne(check, fetchImpl) {

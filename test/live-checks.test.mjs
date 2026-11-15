@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 
 import { LIVE_CHECKS, checkLive } from '../scripts/live-checks.mjs';
@@ -120,4 +121,44 @@ test('checkLive reports every fault on one URL', async () => {
   assert.equal(msgs.length, 2);
   assert.equal(msgs.filter((m) => m.includes('404')).length, 1);
   assert.equal(msgs.filter((m) => m.includes('cookie')).length, 1);
+});
+
+const MISSING = `${SITE_ORIGIN}/no-such-page/`;
+
+test("checkLive reports GitHub's stock 404 page, which isn't ours", async () => {
+  const stock = '<title>Page not found &middot; GitHub Pages</title><h1>404</h1><p>File not found</p>';
+  const msgs = await checkLive(
+    fakeFetch({ [MISSING]: new Response(stock, { status: 404, headers: { 'content-type': HTML } }) }),
+  );
+  assert.equal(msgs.length, 1);
+  assert.match(msgs[0], /no-such-page/);
+});
+
+test("the 404 row looks for a sentence only our 404 page has", () => {
+  const row = LIVE_CHECKS.find((c) => c.expect === 404);
+  assert.ok(readFileSync('docs/404.html', 'utf8').includes(row.contains), row.contains);
+});
+
+test('checkLive reports a page served as something other than HTML', async () => {
+  const msgs = await checkLive(
+    fakeFetch({
+      [PRIVACY]: new Response('Roll Call privacy policy', { status: 200, headers: { 'content-type': 'text/plain' } }),
+    }),
+  );
+  assert.equal(msgs.length, 1);
+  assert.match(msgs[0], /content-type/);
+});
+
+test('checkLive reports a redirect with no Location header', async () => {
+  const msgs = await checkLive(fakeFetch({ [WWW]: new Response(null, { status: 301 }) }));
+  assert.equal(msgs.length, 1);
+  assert.match(msgs[0], /no Location/);
+});
+
+test('checkLive reports a page served where a redirect should be', async () => {
+  const msgs = await checkLive(
+    fakeFetch({ [WWW]: new Response('Roll Call privacy policy', { status: 200, headers: { 'content-type': HTML } }) }),
+  );
+  assert.equal(msgs.length, 1);
+  assert.match(msgs[0], /expected a redirect/);
 });

@@ -1,0 +1,16 @@
+{
+  "name": "unfiltered-site",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.22.0"
+  },
+  "scripts": {
+    "test": "node --test \"test/*.test.mjs\"",
+    "check": "node scripts/check-site.mjs docs",
+    "check:live": "node scripts/check-live.mjs"
+  },
+  "devDependencies": {
+    "html-validate": "11.17.0"
+  }
+}

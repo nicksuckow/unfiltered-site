@@ -28,7 +28,8 @@ footer { margin-top: 3rem; font-size: 0.875rem; }
 
 <section id="third-parties">
 <h2>Third parties</h2>
-<p>Roll Call has no third-party code that collects data, and it shares or sells nothing, because it has nothing to share. If you have turned on Share With App Developers in your iPhone's analytics settings, Apple may send the developer crash reports. Apple controls those reports, and they hold no contacts.</p>
+<p>Roll Call has no third-party code that collects data, and it shares or sells nothing, because it has nothing to share. If you have turned on Share With App Developers in your iPhone's Analytics &amp; Improvements settings, Apple may send the developer crash reports and statistics about how you use the app.</p>
+<p>If you test Roll Call through TestFlight, Apple sends the developer crash reports and usage information whatever that setting says, along with your name and email address unless you joined through a public link, and anything you send as feedback. Crash reports hold no contacts, but a screenshot you send with feedback shows whatever was on screen, including any contacts.</p>
 </section>
 
 <section id="contacts-access">
@@ -43,41 +44,42 @@ footer { margin-top: 3rem; font-size: 0.875rem; }
 
 <section id="changes-and-copies">
 <h2>Changes, and the copies Roll Call keeps</h2>
-<p>Nothing in your address book changes until you confirm it in Review. Before Roll Call removes or merges anything, it saves its own full copy of what it is about to change, including photos. It reads the copy back to check it, and if saving the copy fails, nothing is applied.</p>
-<p>These copies appear in Recently removed, where you can restore them for 30 days. Once a copy is 30 days old, Roll Call deletes it the next time you open the app. The copies stay on your iPhone, in Roll Call's private storage. They are excluded from iCloud Backup, and they are deleted when you delete the app. Apart from these copies, Roll Call writes contact photos nowhere: the pictures on cards are kept in memory only, with no image cache.</p>
+<p>Nothing in your address book changes until you confirm it in Review. Before Roll Call removes or merges anything, it saves its own copy of everything it can read on the cards it is about to change, including photos but not notes (see <a href="#notes">Contact notes</a>). It reads the copy back to check it, and if saving the copy fails, nothing is applied.</p>
+<p>These copies appear in Recently removed, where you can restore them for 30 days. Once a copy is 30 days old, Roll Call deletes it the next time you open the app. The copies stay on your iPhone, in Roll Call's private storage. They are excluded from iCloud Backup, and they are deleted when you delete the app. Apart from these copies and any contacts file you choose to export, Roll Call keeps no contact photos of its own: the pictures on cards are kept in memory only, with no image cache.</p>
 <p>Changes you confirm are made in your iPhone's address book, so iOS syncs them to the accounts your contacts belong to, such as iCloud or Google, just as it does for edits in the Contacts app.</p>
-<p>From Recently removed you can also export a contacts file (.vcf) through the share sheet. Roll Call itself sends your contact data nowhere; exporting is the one way it leaves through Roll Call, and only because you chose it. The exported file is temporary and is deleted when the share sheet closes. Once you share it, though, it is in the hands of whatever app or person you shared it with.</p>
+<p>From Recently removed you can also export a contacts file (.vcf) through the share sheet. Roll Call itself sends your contact data nowhere. The only way to take it out through Roll Call is to export it, and that happens only when you choose to. The exported file is temporary and is deleted when the share sheet closes. Once you share it, though, it is in the hands of whatever app or person you shared it with.</p>
 </section>
 
 <section id="stored-data">
 <h2>What Roll Call stores on your iPhone</h2>
-<p>Roll Call stores only its settings, your progress as opaque record ids and one-way hashes (no names, phone numbers or email addresses), and the 30-day copies in Recently removed. Settings and progress are included in your iPhone's backups, like other app data. The copies in Recently removed are excluded from iCloud Backup, so a phone restored from a backup starts with an empty Recently removed.</p>
+<p>Roll Call stores only its settings, your progress as opaque record ids and one-way hashes (no names, phone numbers or email addresses), a bookmark in the address book's change history that lets it spot changes made in other apps, and the 30-day copies in Recently removed. Everything but the copies is included in your iPhone's backups, like other app data. The copies in Recently removed are excluded from iCloud Backup, so a phone restored from a backup starts with an empty Recently removed.</p>
 </section>
 
 <section id="notes">
 <h2>Contact notes</h2>
-<p>Roll Call doesn't have Apple's permission to read contact notes, so it can't see them or back them up. Roll Call can't read contact notes yet, so notes on removed or merged-away cards won't be in Recently removed. Review shows you this line too. Removing or merging away a card can lose its note.</p>
+<p>Roll Call doesn't yet have Apple's permission to read contact notes, so it can't see, copy or restore them. Review shows this line: “Roll Call can't read contact notes yet, so notes on removed or merged-away cards won't be in Recently removed.” Removing or merging away a card can lose its note.</p>
 </section>
 
 <section id="reminders">
 <h2>Reminders</h2>
-<p>Reminders are optional and off by default. If you turn them on, Roll Call schedules local notifications on your iPhone. Nothing is sent from a server, and Roll Call uses no push notifications. You can change the time or turn reminders off in Settings.</p>
+<p>Reminders are optional and off by default. If you turn them on, Roll Call schedules local notifications on your iPhone. Nothing is sent from a server, and Roll Call uses no push notifications. You can change the time or turn reminders off in Roll Call's Settings.</p>
 </section>
 
 <section id="withdraw">
 <h2>Turning off access and deleting your data</h2>
-<p>You can turn off Roll Call's access to your contacts at any time in Settings &gt; Privacy &amp; Security &gt; Contacts. Doing so doesn't delete the copies in Recently removed.</p>
-<p>To remove the copies, choose Delete these copies now in Recently removed, which deletes every saved copy at once. You can also delete the app, which removes them too.</p>
+<p>You can turn off Roll Call's access to your contacts at any time in your iPhone's Settings &gt; Privacy &amp; Security &gt; Contacts. Doing so doesn't delete the copies in Recently removed. They stay until they are 30 days old, and Roll Call deletes each one the next time you open the app after that.</p>
+<p>To remove the copies sooner, choose Delete these copies now in Recently removed, which deletes every saved copy at once. You don't need to turn access back on first: with access off, Roll Call shows a screen asking for access, and from there you can still open Recently removed to delete or export the copies. Restoring a copy needs access.</p>
+<p>You can also delete the app, which removes everything Roll Call stores on your iPhone, the copies included. Anything Roll Call put in an iPhone backup before then, such as its settings and your progress, stays in that backup.</p>
 </section>
 
 <section id="website">
 <h2>This website</h2>
-<p>This website has no scripts, cookies, analytics or web fonts. It is hosted on GitHub Pages, and GitHub may log the IP address of visitors for security, as described in GitHub's Privacy Statement.</p>
+<p>This website has no scripts, cookies, analytics or web fonts. It is hosted on GitHub Pages, and GitHub logs and stores the IP address of every visitor for security, as described in GitHub's Privacy Statement.</p>
 </section>
 
 <section id="contact">
 <h2>Contact</h2>
-<p>Questions about this policy? Write to Nicholas Suckow at support@unfilteredinvestmentsllc.com. If this policy changes, the date at the top of this page changes with it.</p>
+<p>Questions about this policy? Write to Nicholas Suckow at <a href="mailto:support@unfilteredinvestmentsllc.com">support@unfilteredinvestmentsllc.com</a>. If this policy changes, the date at the top of this page changes with it.</p>
 </section>
 </main>
 <footer><p>© 2026 Nicholas Suckow · <a href="mailto:support@unfilteredinvestmentsllc.com">support@unfilteredinvestmentsllc.com</a></p></footer>

@@ -8,14 +8,14 @@ const html = pages.get('roll-call/privacy/index.html');
 const PRIVACY_SECTIONS = {
   collected: [/Roll Call doesn't collect any data\./, /makes no network requests/, /analytics/, /Data Not Collected/,
     /[Nn]othing leaves your iPhone unless you export it/],
-  'third-parties': [/no third-party/, /Share With App Developers/],
+  'third-parties': [/no third-party/, /Share With App Developers/, /TestFlight/],
   'contacts-access': [/keep or set aside/, /duplicates/, /on your iPhone/],
   'limited-access': [/iOS 18/, /only the contacts you share/],
   'changes-and-copies': [PROMISE, /Recently removed/, /30 days/, /excluded from iCloud Backup/, /deleted when you delete the app/, /\.vcf/],
   'stored-data': [/settings/, /opaque record ids and one-way hashes/, /no names, phone numbers or email addresses/, /Recently removed/, /iCloud Backup/],
   notes: [NOTES_LINE],
   reminders: [/local notifications/, /\boff\b/],
-  withdraw: [/Settings > Privacy & Security > Contacts/, /Delete these copies now/, /delete the app/],
+  withdraw: [/Settings > Privacy & Security > Contacts/, /Delete these copies now/, /with access off/, /delete the app/],
   website: [/GitHub Pages/, /IP address/, /no scripts, cookies, analytics or web fonts/],
   contact: [/Nicholas Suckow/, /support@unfilteredinvestmentsllc\.com/],
 };

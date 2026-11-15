@@ -29,9 +29,9 @@ export function sectionText(html, id) {
 }
 
 export function styleOf(html) {
-  const m = html.match(/<style>([\s\S]*?)<\/style>/);
-  if (!m) throw new Error('No <style> block');
-  return m[1];
+  const blocks = [...html.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/gi)];
+  if (blocks.length !== 1) throw new Error(`Expected one <style> block, found ${blocks.length}`);
+  return blocks[0][1];
 }
 
 export const PROMISE = /Nothing in your address book changes until you confirm it in Review\./;

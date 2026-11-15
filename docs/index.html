@@ -5,10 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Apps by Nicholas Suckow</title>
 <style>
-html { font: -apple-system-body; font-family: -apple-system, system-ui, sans-serif; }
-body { line-height: 1.5; max-width: 40rem; margin: 0 auto; padding: 1rem 1.25rem; color-scheme: light dark; overflow-wrap: anywhere; }
-h1 { font-size: 1.75rem; line-height: 1.2; }
-h2 { font-size: 1.25rem; margin-top: 2rem; }
+html { color-scheme: light dark; font-family: -apple-system, system-ui, sans-serif; }
+@supports (-webkit-touch-callout: none) { html { font: -apple-system-body; font-family: -apple-system, system-ui, sans-serif; } }
+body { line-height: 1.5; max-width: 40rem; margin: 0 auto; padding: 1rem min(1.25rem, 5vw); overflow-wrap: anywhere; }
+h1 { font-size: min(1.75rem, 1rem + 4vw); line-height: 1.2; -webkit-hyphens: auto; hyphens: auto; }
+h2 { font-size: min(1.25rem, 1rem + 2vw); margin-top: 2rem; -webkit-hyphens: auto; hyphens: auto; }
 footer { margin-top: 3rem; font-size: 0.875rem; }
 </style>
 </head>

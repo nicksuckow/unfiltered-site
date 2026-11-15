@@ -17,9 +17,16 @@ test('every page has the shared head', () => {
     assert.ok(html.includes('<html lang="en">'));
     assert.ok(html.includes('<meta charset="utf-8">'));
     assert.ok(html.includes('<meta name="viewport" content="width=device-width, initial-scale=1">'));
+    assert.equal(count(html, /<style\b/gi), 1);
     assert.equal(count(html, /<style>/g), 1);
     assert.equal(count(html, /<main/g), 1);
     assert.equal(count(html, /<h1/g), 1);
+  }
+});
+
+test('every section has an id and starts with an <h2>', () => {
+  for (const [file, html] of pages) {
+    assert.equal(count(html, /<section\b/g), count(html, /<section id="[a-z][a-z0-9-]*">\s*<h2>/g), file);
   }
 });
 
@@ -29,19 +36,25 @@ test('every page uses the same style block', () => {
 
 test('the style wraps long words and sizes nothing in px', () => {
   assert.match(styleOf(home), /overflow-wrap:\s*anywhere/);
-  assert.doesNotMatch(styleOf(home), /\d(?:\.\d+)?px\b/);
+  // px and every other absolute unit: none of them follow the system text size.
+  assert.doesNotMatch(styleOf(home), /\d(?:\.\d+)?(?:px|pt|pc|cm|mm|in|q)\b/i);
 });
 
-test('the style follows the system text size', () => {
-  assert.match(styleOf(home), /html\s*\{[^}]*font:\s*-apple-system-body;/);
+test('the style follows the system text size on iPhone only', () => {
+  const style = styleOf(home);
+  assert.match(style, /html\s*\{[^}]*font:\s*-apple-system-body;/);
+  // On a Mac, -apple-system-body is the 13pt Mac body style, so it is kept to iOS.
+  assert.match(style, /@supports \(-webkit-touch-callout: none\) \{ html \{ font: -apple-system-body;/);
+  assert.equal(count(style, /-apple-system-body/g), 1);
 });
 
 test('the style follows light and dark and sets no colours', () => {
-  assert.match(styleOf(home), /color-scheme:\s*light dark/);
-  assert.doesNotMatch(
-    styleOf(home),
-    /#[0-9a-f]{3,8}\b|\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch)\(/i,
-  );
+  const style = styleOf(home);
+  // On the root: the canvas and the default text colour follow the root's scheme.
+  assert.match(style, /(?:^|\n)html\s*\{[^}]*color-scheme:\s*light dark/);
+  assert.doesNotMatch(style, /#[0-9a-f]{3,8}\b|\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch)\(/i);
+  // No colour or background declaration at all, named colours included; color-scheme is fine.
+  assert.doesNotMatch(style, /(?<![\w-])(?:[a-z-]*-)?color\s*:|(?<![\w-])background(?:-[a-z]+)?\s*:/i);
 });
 
 test('every footer names the publisher and the contact', () => {

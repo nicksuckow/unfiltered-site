@@ -50,7 +50,16 @@ const cases = [
   ],
   ['skipped heading level', page({ body: BAD_HEADINGS }), 'heading-level'],
   ['second h1', page({ body: '<main><h1>A</h1><h1>B</h1></main>' }), 'heading-level'],
+  ['named character reference', page({ body: '<main><h1>Roll Call&rsquo;s</h1></main>' }), '"&rsquo;"'],
+  ['numeric character reference', page({ body: '<main><h1>N&#105;ck</h1></main>' }), '"&#105;"'],
+  ['bare ampersand', page({ body: '<main><h1>A & B</h1></main>' }), '"&"'],
 ];
+
+test('validatePage allows &amp;, &lt; and &gt;, and names the line of any other reference', async () => {
+  assert.deepEqual(await validatePage(page({ body: '<main><h1>A &amp; B &lt; C &gt; D</h1></main>' }), 'x.html'), []);
+  const problems = await validatePage(page({ body: '<main><h1>A</h1>\n<p>fr&#101;e</p></main>' }), 'x.html');
+  assert.ok(problems.some((p) => p.message.includes('line 11')), JSON.stringify(problems));
+});
 
 for (const [name, html, expected] of cases) {
   test(`validatePage reports a ${name}`, async () => {
@@ -126,6 +135,49 @@ test("findPrivacyProblems flags http:// even to the site's own host", () => {
 
 test('findPrivacyProblems flags a mail address at another domain', () => {
   assertFlags(page({ body: '<a href="mailto:someone@example.com">x</a>' }), 'example.com');
+});
+
+test('findPrivacyProblems flags every address in a mailto link, not only the last', () => {
+  const site = 'support@unfilteredinvestmentsllc.com';
+  for (const href of [
+    `mailto:${site}?cc=someone@example.com`,
+    `mailto:someone@example.com,${site}`,
+    `mailto:${site}?subject=Roll%20Call&amp;bcc=someone%40example.com`,
+    `mailto:?to=someone@example.com`,
+  ]) {
+    assertFlags(page({ body: `<a href="${href}">x</a>` }), 'example.com');
+  }
+});
+
+test('findPrivacyProblems passes a mailto link with only the site address', () => {
+  const body = '<a href="mailto:support@unfilteredinvestmentsllc.com?subject=Roll%20Call">x</a>';
+  assert.deepEqual(findPrivacyProblems(page({ body }), 'x.html'), []);
+});
+
+test('findPrivacyProblems flags any scheme but https://, and any host but the site', () => {
+  for (const [href, expected] of [
+    ['ftp://files.example.com/x', 'ftp:'],
+    ['webcal://cal.example.com/x.ics', 'webcal:'],
+    ['itms-apps://apps.apple.com/app/id123', 'itms-apps:'],
+    ['http://localhost:8000/roll-call/privacy/', 'localhost:8000'],
+    ['https://unfilteredinvestmentsllc.com@evil.example/', 'evil.example'],
+    ['https://unfilteredinvestmentsllc.com:8443/', 'unfilteredinvestmentsllc.com:8443'],
+  ]) {
+    assertFlags(page({ body: `<a href="${href}">x</a>` }), expected);
+  }
+});
+
+test('findPrivacyProblems names the line and the text it matched', () => {
+  // The body starts on line 10 of the fixture page.
+  const body = '<main><h1>Title</h1>\n<p>The Accessibility URL (on the support page)</p>\n<p>It runs no JavaScript: none.</p></main>';
+  const problems = findPrivacyProblems(page({ body }), 'x.html');
+  assert.ok(problems.some((p) => p.message.includes('CSS') && p.message.includes('line 11: "URL ("')), JSON.stringify(problems));
+  assert.ok(problems.some((p) => p.message.includes('javascript:') && p.message.includes('line 12: "JavaScript:"')), JSON.stringify(problems));
+  assertFlags(page({ head: '<script>1</script>' }), '<script> is not allowed: it runs or loads something (line 7: "<script")');
+});
+
+test('findPrivacyProblems flags an event handler after a quoted ">"', () => {
+  assertFlags(page({ body: '<a href="/" title=">" onclick="alert(1)">x</a>' }), 'event handler');
 });
 
 test('findPrivacyProblems flags meta http-equiv', () => {

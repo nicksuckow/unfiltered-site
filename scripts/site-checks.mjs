@@ -25,6 +25,16 @@ const HEAD_REQUIREMENTS = [
   ],
 ];
 
+// Characters are literal UTF-8; only &, < and > are escaped. Any other reference
+// (&rsquo;, &nbsp;, &#105;) can also hide a word from the copy tests. A bare "&" is
+// html-validate's no-raw-characters.
+const OTHER_REFERENCE = /&(?!(?:amp|lt|gt);)[a-z0-9#]+;?/gi;
+
+/** The 1-based line of an index into the raw file. */
+function lineOf(html, index) {
+  return html.slice(0, index).split('\n').length;
+}
+
 /**
  * @param {string} html
  * @param {string} file
@@ -46,6 +56,13 @@ export async function validatePage(html, file) {
   for (const [needle, message] of HEAD_REQUIREMENTS) {
     if (!html.includes(needle)) problems.push({ file, check: 'html', message });
   }
+  for (const m of html.matchAll(OTHER_REFERENCE)) {
+    problems.push({
+      file,
+      check: 'html',
+      message: `character reference "${m[0]}" is not allowed: write the character itself, and escape only &amp;, &lt; and &gt; (line ${lineOf(html, m.index)})`,
+    });
+  }
   return problems;
 }
 
@@ -56,10 +73,53 @@ const BANNED_TAGS = [
   'video', 'audio', 'track', 'link', 'svg', 'form', 'base',
 ];
 
-const CSS_LOADERS = [/@font-face/i, /@import/i, /\burl\s*\(/i];
-// "//host" with or without a scheme; the host needs a dot, so prose slashes don't match.
-const URL_HOST = /(?:(https?:)|(?<![:\w]))\/\/([a-z0-9-]+(?:\.[a-z0-9-]+)+)/gi;
-const MAILTO = /mailto:([^"'\s<>?]+)/gi;
+// Raw-file patterns. They can match prose too ("JavaScript: none"), so each message
+// names the line and the text, and the author can see what tripped it.
+const BANNED_PATTERNS = [
+  [/\son[a-z]+\s*=/i, 'event handler attribute (onclick and the like) is not allowed'],
+  [/javascript\s*:/i, 'javascript: URL is not allowed'],
+  [/http-equiv/i, '<meta http-equiv> is not allowed'],
+  [/@font-face|@import|\burl\s*\(/i, 'CSS that loads a font or file (@font-face, @import, url()) is not allowed'],
+];
+
+// A URL with a scheme. Only https://SITE_HOST passes, so this also catches ftp:,
+// itms-apps:, localhost, a port and user@host.
+const SCHEME_URL = /\b([a-z][a-z0-9+.-]*):\/\/([^\s"'<>\/?#]*)/gi;
+// "//host" with no scheme; the host needs a dot, so prose slashes don't match.
+const SCHEMELESS_HOST = /(?<![:\w])\/\/([a-z0-9-]+(?:\.[a-z0-9-]+)+)/gi;
+// Everything after mailto: up to a quote, space or tag, query included.
+const MAILTO = /mailto:([^"'\s<>]*)/gi;
+
+/** ` (line 12: "JavaScript:")` for a match, without its leading whitespace. */
+function where(html, m) {
+  const text = m[0].trimStart();
+  return ` (line ${lineOf(html, m.index + m[0].length - text.length)}: "${text.trimEnd()}")`;
+}
+
+function decode(s) {
+  try {
+    return decodeURIComponent(s);
+  } catch {
+    return s;
+  }
+}
+
+/** Every address a mailto: target names: the comma list before "?", and any to=, cc= or bcc= value. */
+function mailtoAddresses(target) {
+  const t = target.replace(/&amp;/gi, '&');
+  const q = t.indexOf('?');
+  const lists = [q === -1 ? t : t.slice(0, q)];
+  if (q !== -1) {
+    for (const pair of t.slice(q + 1).split('&')) {
+      const eq = pair.indexOf('=');
+      if (eq !== -1 && /^(?:to|cc|bcc)$/i.test(pair.slice(0, eq))) lists.push(pair.slice(eq + 1));
+    }
+  }
+  return lists
+    .flatMap((list) => decode(list).split(','))
+    .map((a) => a.trim().toLowerCase())
+    .filter(Boolean);
+}
 
 /**
  * check 'privacy'. A regex scan of the raw file, so even a <script> inside a comment fails.
@@ -73,29 +133,33 @@ export function findPrivacyProblems(html, file) {
   const add = (message) => problems.push({ file, check: 'privacy', message });
 
   for (const tag of BANNED_TAGS) {
-    if (new RegExp(`<\\s*${tag}(?![\\w-])`, 'i').test(html)) {
-      add(`<${tag}> is not allowed: it runs or loads something`);
-    }
+    const m = new RegExp(`<\\s*${tag}(?![\\w-])`, 'i').exec(html);
+    if (m) add(`<${tag}> is not allowed: it runs or loads something${where(html, m)}`);
   }
-  if (/\son[a-z]+\s*=/i.test(html)) add('event handler attribute (onclick and the like) is not allowed');
-  if (/javascript\s*:/i.test(html)) add('javascript: URL is not allowed');
-  if (/http-equiv/i.test(html)) add('<meta http-equiv> is not allowed');
-  if (CSS_LOADERS.some((re) => re.test(html))) {
-    add('CSS that loads a font or file (@font-face, @import, url()) is not allowed');
+  for (const [re, message] of BANNED_PATTERNS) {
+    const m = re.exec(html);
+    if (m) add(message + where(html, m));
   }
 
+  const schemes = new Set();
   const hosts = new Set();
-  let sawHttp = false;
-  for (const m of html.matchAll(URL_HOST)) {
-    if (m[1]?.toLowerCase() === 'http:') sawHttp = true;
-    hosts.add(m[2].toLowerCase());
+  for (const m of html.matchAll(SCHEME_URL)) {
+    schemes.add(m[1].toLowerCase());
+    hosts.add(m[2].toLowerCase().replace(/\.$/, ''));
   }
-  if (sawHttp) add('http: URL is not allowed, use https://');
+  for (const m of html.matchAll(SCHEMELESS_HOST)) hosts.add(m[1].toLowerCase());
+  for (const scheme of schemes) {
+    if (scheme !== 'https') add(`${scheme}: URL is not allowed, use https://`);
+  }
   for (const host of hosts) {
-    if (host !== SITE_HOST) add(`third-party or non-canonical host: ${host}`);
+    if (host !== SITE_HOST) add(`third-party or non-canonical host: ${host || '(none)'}`);
   }
+
+  const domains = new Set();
   for (const m of html.matchAll(MAILTO)) {
-    const domain = m[1].slice(m[1].lastIndexOf('@') + 1).toLowerCase();
+    for (const address of mailtoAddresses(m[1])) domains.add(address.slice(address.lastIndexOf('@') + 1));
+  }
+  for (const domain of domains) {
     if (domain !== SITE_HOST) add(`mailto: address at another domain: ${domain}`);
   }
   return problems;
